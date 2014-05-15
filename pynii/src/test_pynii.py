@@ -1,15 +1,23 @@
 '''
+Runs some tests comparing pynii results to nibabel
+
 Created on 6 Jun 2013
 
 @author: gfagiolo
 '''
-from pynii import *
+from pynii import Nifti1Data, logging, np, sys
 ROOT_LOGGER = logging.getLogger()
+import os
+from glob import glob
+import nibabel as nb
+from datetime import datetime
 
-def run_test(dd):
-    import os
-    from glob import glob
-    import nibabel as nb
+TEST_DATA_DIR = os.path.join('..', 'testdata')
+
+def run_test(dd=TEST_DATA_DIR):
+    '''
+    :param dd: str the test data directory 
+    '''    
     for fname in glob(os.path.join(dd, '*.nii.gz')):
         if fname.find('.pynii')>-1:
             continue
@@ -57,10 +65,7 @@ def run_test(dd):
             logging.error('Test failed %s'%str(e))
             ROOT_LOGGER.handlers[0].flush()
             
-def single_test():
-    from datetime import datetime
-    import nibabel as nb
-    fname = r'C:\src\eclipse_wb\pynii\testdata\avg152T1_RL_nifti.nii.gz'
+def single_test(fname=os.path.join(TEST_DATA_DIR, 'avg152T1_RL_nifti.nii.gz')):   
     t0 = datetime.now()
     nbii = nb.load(fname)
     nbii.get_data()
@@ -74,7 +79,7 @@ def single_test():
     nb.save(nbii, oname)
     oname = fname.replace('.nii','.pynii.nii')
     nii.write(oname)
-    
+    #plot results
     import pylab as pl
     if len(nii.getDim()) == 4:
         pl.subplot(311)    
@@ -99,6 +104,5 @@ def single_test():
         pl.show()
         pl.close()
             
-if __name__ == "__main__":
-    testdatadir = r'C:\src\eclipse_wb\pynii\testdata'
-    run_test(testdatadir)
+if __name__ == "__main__":    
+    run_test()
