@@ -339,10 +339,10 @@ class Nifti1Data(object):
     #===========================================================================
     
     @staticmethod
-    def load(filename):
+    def load(filename, read_header_only=False):
         'Load a nifti image'
         def read_header(fileobj):
-            hdr_bindata = of.read(header_dtype.itemsize)
+            hdr_bindata = fileobj.read(header_dtype.itemsize)
             hdr = np.ndarray((), dtype=header_dtype, buffer=hdr_bindata)
             endianness = guessed_endian(hdr)
             if endianness == swapped_code:
@@ -362,6 +362,8 @@ class Nifti1Data(object):
                 raise ValueError('File should be either in .nii or .nii.gz format')        
             #read header
             hdr, endianness = read_header(of)
+            if read_header_only:
+                return hdr            
             #seek to voxel data
             of.seek(int(hdr['vox_offset']))
             img_bindata = of.read()
@@ -413,6 +415,8 @@ class Nifti1Data(object):
         finally:
             if not of is None:
                 of.close()
+
+
 
 
 #===============================================================================
