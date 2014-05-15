@@ -11,5 +11,5 @@ setup(name='pynii',
       author='Gianlorenzo Fagiolo',
       url='https://github.com/gianlo/pynii',
       license='License :: OSI Approved :: MIT License',
-      requires= ['numpy'],
+      requires= ['numpy', 'dicom'],
       py_modules=['pynii'])
